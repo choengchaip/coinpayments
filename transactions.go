@@ -1,9 +1,7 @@
 package coinpayments
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/dghubble/sling"
@@ -27,11 +25,11 @@ type Transaction struct {
 }
 
 type TransactionFind struct {
-	Amount     float64 `json:"amount"`
-	Address    string  `json:"payment_address"`
-	Coin       string  `json:"coin"`
-	Status     int     `json:"status"`
-	StatusText string  `json:"status_text"`
+	Amount     string `json:"amountf"`
+	Address    string `json:"payment_address"`
+	Coin       string `json:"coin"`
+	Status     int    `json:"status"`
+	StatusText string `json:"status_text"`
 }
 
 type TransactionResponse struct {
@@ -92,19 +90,12 @@ func (s *TransactionService) NewTransaction(transactionParams *TransactionParams
 
 func (s TransactionService) FindTransaction(txnID string) (TransactionFindResponse, *http.Response, error) {
 	transactionResponse := new(TransactionFindResponse)
-	r := new(interface{})
 	s.FindParams.TXNID = txnID
 
 	fmt.Println(getPayload(s.FindParams))
 	fmt.Println(getHMAC(getPayload(s.FindParams)))
 	resp, err := s.sling.New().Set("HMAC", s.getHMAC(s.FindParams)).Post(
 		"api.php").BodyForm(s.FindParams).ReceiveSuccess(transactionResponse)
-
-	_, _ = s.sling.New().Set("HMAC", s.getHMAC(s.FindParams)).Post(
-		"api.php").BodyForm(s.FindParams).ReceiveSuccess(r)
-
-	b, _ := json.Marshal(&r)
-	log.Println(string(b))
 
 	return *transactionResponse, resp, err
 }
