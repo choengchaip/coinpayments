@@ -83,7 +83,8 @@ func (s TransactionService) FindTransaction(txnID string, isFull bool) (interfac
 	fmt.Println(getPayload(params))
 	fmt.Println(getHMAC(getPayload(params)))
 	resp, err := s.sling.New().Set("HMAC", s.getHMAC()).Post(
-		"api.php").BodyForm(params).ReceiveSuccess(transactionResponse)
+		"api.php").BodyJSON(params).ReceiveSuccess(transactionResponse)
+
 	return *transactionResponse, resp, err
 }
 
