@@ -61,8 +61,8 @@ func newTransactionService(sling *sling.Sling, apiPublicKey string) *Transaction
 	return transactionService
 }
 
-func (s *TransactionService) getHMAC() string {
-	return getHMAC(getPayload(s.Params))
+func (s *TransactionService) getHMAC(params interface{}) string {
+	return getHMAC(getPayload(params))
 }
 
 func (s *TransactionService) NewTransaction(transactionParams *TransactionParams) (TransactionResponse, *http.Response, error) {
@@ -70,16 +70,18 @@ func (s *TransactionService) NewTransaction(transactionParams *TransactionParams
 	s.Params.TransactionParams = *transactionParams
 	fmt.Println(getPayload(s.Params))
 	fmt.Println(getHMAC(getPayload(s.Params)))
-	resp, err := s.sling.New().Set("HMAC", s.getHMAC()).Post(
+	resp, err := s.sling.New().Set("HMAC", s.getHMAC(s.Params)).Post(
 		"api.php").BodyForm(s.Params).ReceiveSuccess(transactionResponse)
 	return *transactionResponse, resp, err
 }
 
 func (s TransactionService) FindTransaction(txnID string) (interface{}, *http.Response, error) {
 	transactionResponse := new(interface{})
+	s.FindParams.TXNID = txnID
+
 	fmt.Println(getPayload(s.FindParams))
 	fmt.Println(getHMAC(getPayload(s.FindParams)))
-	resp, err := s.sling.New().Set("HMAC", s.getHMAC()).Post(
+	resp, err := s.sling.New().Set("HMAC", s.getHMAC(s.FindParams)).Post(
 		"api.php").BodyForm(s.FindParams).ReceiveSuccess(transactionResponse)
 
 	return *transactionResponse, resp, err
