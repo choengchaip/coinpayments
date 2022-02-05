@@ -1,9 +1,8 @@
 package coinpayments
 
 import (
-	"net/http"
-
 	"fmt"
+	"net/http"
 
 	"github.com/dghubble/sling"
 )
@@ -12,6 +11,7 @@ type TransactionService struct {
 	sling        *sling.Sling
 	ApiPublicKey string
 	Params       TransactionBodyParams
+	FindParams   TransactionFindBodyParams
 }
 
 type Transaction struct {
@@ -48,6 +48,10 @@ type TransactionBodyParams struct {
 	TransactionParams
 }
 
+type TransactionFindBodyParams struct {
+	APIParams
+}
+
 func newTransactionService(sling *sling.Sling, apiPublicKey string) *TransactionService {
 	transactionService := &TransactionService{
 		sling:        sling.Path("api.php"),
@@ -71,19 +75,12 @@ func (s *TransactionService) NewTransaction(transactionParams *TransactionParams
 	return *transactionResponse, resp, err
 }
 
-func (s TransactionService) FindTransaction(txnID string, isFull bool) (interface{}, *http.Response, error) {
+func (s TransactionService) FindTransaction(txnID string) (interface{}, *http.Response, error) {
 	transactionResponse := new(interface{})
-	params := map[string]interface{}{
-		"version": s.Params.Version,
-		"cmd":     "get_tx_info",
-		"key":     s.Params.Key,
-		"txid":    txnID,
-		"full":    isFull,
-	}
-	fmt.Println(getPayload(params))
-	fmt.Println(getHMAC(getPayload(params)))
+	fmt.Println(getPayload(s.FindParams))
+	fmt.Println(getHMAC(getPayload(s.FindParams)))
 	resp, err := s.sling.New().Set("HMAC", s.getHMAC()).Post(
-		"api.php").BodyJSON(params).ReceiveSuccess(transactionResponse)
+		"api.php").BodyForm(s.FindParams).ReceiveSuccess(transactionResponse)
 
 	return *transactionResponse, resp, err
 }
@@ -92,4 +89,8 @@ func (s *TransactionService) getParams() {
 	s.Params.Command = "create_transaction"
 	s.Params.Key = s.ApiPublicKey
 	s.Params.Version = "1"
+
+	s.FindParams.Command = "get_tx_info"
+	s.FindParams.Key = s.Params.Key
+	s.FindParams.Version = s.Params.Version
 }
