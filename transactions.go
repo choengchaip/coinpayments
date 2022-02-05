@@ -28,7 +28,7 @@ type TransactionFind struct {
 	Amount     string `json:"amount"`
 	Address    string `json:"payment_address"`
 	Coin       string `json:"coin"`
-	Status     string `json:"status"`
+	Status     int    `json:"status"`
 	StatusText string `json:"status_text"`
 }
 
