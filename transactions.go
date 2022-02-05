@@ -25,11 +25,11 @@ type Transaction struct {
 }
 
 type TransactionFind struct {
-	Amount     string `json:"amount"`
-	Address    string `json:"payment_address"`
-	Coin       string `json:"coin"`
-	Status     int    `json:"status"`
-	StatusText string `json:"status_text"`
+	Amount     float64 `json:"amount"`
+	Address    string  `json:"payment_address"`
+	Coin       string  `json:"coin"`
+	Status     int     `json:"status"`
+	StatusText string  `json:"status_text"`
 }
 
 type TransactionResponse struct {
