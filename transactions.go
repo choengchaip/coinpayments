@@ -24,9 +24,22 @@ type Transaction struct {
 	QRCodeUrl      string `json:"qrcode_url"`
 }
 
+type TransactionFind struct {
+	Amount     string `json:"amount"`
+	Address    string `json:"payment_address"`
+	Coin       string `json:"coin"`
+	Status     string `json:"status"`
+	StatusText string `json:"status_text"`
+}
+
 type TransactionResponse struct {
 	Error  string       `json:"error"`
 	Result *Transaction `json:"result"`
+}
+
+type TransactionFindResponse struct {
+	Error  string           `json:"error"`
+	Result *TransactionFind `json:"result"`
 }
 
 type TransactionParams struct {
@@ -75,8 +88,8 @@ func (s *TransactionService) NewTransaction(transactionParams *TransactionParams
 	return *transactionResponse, resp, err
 }
 
-func (s TransactionService) FindTransaction(txnID string) (interface{}, *http.Response, error) {
-	transactionResponse := new(interface{})
+func (s TransactionService) FindTransaction(txnID string) (TransactionFindResponse, *http.Response, error) {
+	transactionResponse := new(TransactionFindResponse)
 	s.FindParams.TXNID = txnID
 
 	fmt.Println(getPayload(s.FindParams))
