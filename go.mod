@@ -1,4 +1,4 @@
-module coinpayments
+module github.com/choengchaip/coinpayments
 
 go 1.17
 
