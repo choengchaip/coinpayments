@@ -2,6 +2,7 @@ package coinpayments
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/dghubble/sling"
@@ -90,12 +91,18 @@ func (s *TransactionService) NewTransaction(transactionParams *TransactionParams
 
 func (s TransactionService) FindTransaction(txnID string) (TransactionFindResponse, *http.Response, error) {
 	transactionResponse := new(TransactionFindResponse)
+	r := new(interface{})
 	s.FindParams.TXNID = txnID
 
 	fmt.Println(getPayload(s.FindParams))
 	fmt.Println(getHMAC(getPayload(s.FindParams)))
 	resp, err := s.sling.New().Set("HMAC", s.getHMAC(s.FindParams)).Post(
 		"api.php").BodyForm(s.FindParams).ReceiveSuccess(transactionResponse)
+
+	_, _ = s.sling.New().Set("HMAC", s.getHMAC(s.FindParams)).Post(
+		"api.php").BodyForm(s.FindParams).ReceiveSuccess(&r)
+
+	log.Println(r)
 
 	return *transactionResponse, resp, err
 }
