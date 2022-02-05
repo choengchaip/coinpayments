@@ -1,6 +1,7 @@
 package coinpayments
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -100,9 +101,10 @@ func (s TransactionService) FindTransaction(txnID string) (TransactionFindRespon
 		"api.php").BodyForm(s.FindParams).ReceiveSuccess(transactionResponse)
 
 	_, _ = s.sling.New().Set("HMAC", s.getHMAC(s.FindParams)).Post(
-		"api.php").BodyForm(s.FindParams).ReceiveSuccess(&r)
+		"api.php").BodyForm(s.FindParams).ReceiveSuccess(r)
 
-	log.Println(r)
+	b, _ := json.Marshal(&r)
+	log.Println(string(b))
 
 	return *transactionResponse, resp, err
 }
