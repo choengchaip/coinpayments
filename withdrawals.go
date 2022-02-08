@@ -85,7 +85,6 @@ func (s *WithdrawalService) CreateWithdrawal(transactionParams *WithdrawalParams
 func (s WithdrawalService) FindWithdrawal(txnID string) (WithdrawalFindResponse, *http.Response, error) {
 	transactionResponse := new(WithdrawalFindResponse)
 	s.FindParams.TXNID = txnID
-
 	fmt.Println(getPayload(s.FindParams))
 	fmt.Println(getHMAC(getPayload(s.FindParams)))
 	resp, err := s.sling.New().Set("HMAC", s.getHMAC(s.FindParams)).Post(
