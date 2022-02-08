@@ -78,7 +78,7 @@ func (s *TransactionService) getHMAC(params interface{}) string {
 	return getHMAC(getPayload(params))
 }
 
-func (s *TransactionService) NewTransaction(transactionParams *TransactionParams) (TransactionResponse, *http.Response, error) {
+func (s *TransactionService) CreateTransaction(transactionParams *TransactionParams) (TransactionResponse, *http.Response, error) {
 	transactionResponse := new(TransactionResponse)
 	s.Params.TransactionParams = *transactionParams
 	fmt.Println(getPayload(s.Params))

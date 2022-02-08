@@ -21,7 +21,7 @@ func TestTransactions(t *testing.T) {
 	})
 
 	client := NewClient("", "", httpClient)
-	transaction, _, err := client.Transactions.NewTransaction(&TransactionParams{
+	transaction, _, err := client.Transactions.CreateTransaction(&TransactionParams{
 		Amount:    0.01,
 		Currency1: "BTC",
 		Currency2: "BTC",
