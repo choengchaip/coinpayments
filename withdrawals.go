@@ -2,6 +2,7 @@ package coinpayments
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/dghubble/sling"
@@ -15,13 +16,9 @@ type WithdrawalService struct {
 }
 
 type Withdrawal struct {
-	Amount         string `json:"amount"`
-	Address        string `url:"address"`
-	TXNId          string `json:"txn_id"`
-	ConfirmsNeeded string `json:"confirms_needed"`
-	Timeout        uint32 `json:"timeout"`
-	StatusUrl      string `json:"status_url"`
-	QRCodeUrl      string `json:"qrcode_url"`
+	ID     string  `json:"id"`
+	Status int     `json:"status"`
+	Amount float64 `json:"amount"`
 }
 
 type WithdrawalFind struct {
@@ -77,11 +74,18 @@ func (s *WithdrawalService) getHMAC(params interface{}) string {
 
 func (s *WithdrawalService) CreateWithdrawal(transactionParams *WithdrawalParams) (WithdrawalResponse, *http.Response, error) {
 	transactionResponse := new(WithdrawalResponse)
+	t := new(interface{})
 	s.Params.WithdrawalParams = *transactionParams
 	fmt.Println(getPayload(s.Params))
 	fmt.Println(getHMAC(getPayload(s.Params)))
 	resp, err := s.sling.New().Set("HMAC", s.getHMAC(s.Params)).Post(
+		"api.php").BodyForm(s.Params).ReceiveSuccess(t)
+
+	log.Println(t)
+
+	resp, err = s.sling.New().Set("HMAC", s.getHMAC(s.Params)).Post(
 		"api.php").BodyForm(s.Params).ReceiveSuccess(transactionResponse)
+
 	return *transactionResponse, resp, err
 }
 
