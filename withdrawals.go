@@ -26,6 +26,7 @@ type WithdrawalFind struct {
 	Coin       string `json:"coin"`
 	Status     int    `json:"status"`
 	StatusText string `json:"status_text"`
+	Note       string `json:"note"`
 }
 
 type WithdrawalResponse struct {
