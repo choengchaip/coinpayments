@@ -1,9 +1,7 @@
 package coinpayments
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/dghubble/sling"
@@ -86,17 +84,11 @@ func (s *WithdrawalService) CreateWithdrawal(transactionParams *WithdrawalParams
 
 func (s WithdrawalService) FindWithdrawal(txnID string) (WithdrawalFindResponse, *http.Response, error) {
 	transactionResponse := new(WithdrawalFindResponse)
-	t := new(interface{})
 	s.FindParams.TXNID = txnID
 	fmt.Println(getPayload(s.FindParams))
 	fmt.Println(getHMAC(getPayload(s.FindParams)))
+
 	resp, err := s.sling.New().Set("HMAC", s.getHMAC(s.FindParams)).Post(
-		"api.php").BodyForm(s.FindParams).ReceiveSuccess(t)
-
-	b, _ := json.Marshal(&t)
-	log.Println(string(b))
-
-	resp, err = s.sling.New().Set("HMAC", s.getHMAC(s.FindParams)).Post(
 		"api.php").BodyForm(s.FindParams).ReceiveSuccess(transactionResponse)
 
 	return *transactionResponse, resp, err
