@@ -49,7 +49,7 @@ func (s *TransactionService) getHMAC(params interface{}) string {
 	return getHMAC(getPayload(params))
 }
 
-func (s *TransactionService) CreateTransactionMap(transactionParams *TransactionParams) (map[string]interface{}, *http.Response, error) {
+func (s *TransactionService) CreateTransaction(transactionParams *TransactionParams) (map[string]interface{}, *http.Response, error) {
 	transactionResponse := new(map[string]interface{})
 	s.Params.TransactionParams = *transactionParams
 	fmt.Println(getPayload(s.Params))
