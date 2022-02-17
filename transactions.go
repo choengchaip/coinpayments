@@ -13,35 +13,6 @@ type TransactionService struct {
 	Params       TransactionBodyParams
 	FindParams   TransactionFindBodyParams
 }
-
-type Transaction struct {
-	Amount         string `json:"amount"`
-	Address        string `url:"address"`
-	TXNId          string `json:"txn_id"`
-	ConfirmsNeeded string `json:"confirms_needed"`
-	Timeout        uint32 `json:"timeout"`
-	StatusUrl      string `json:"status_url"`
-	QRCodeUrl      string `json:"qrcode_url"`
-}
-
-type TransactionFind struct {
-	Amount     string `json:"amountf"`
-	Address    string `json:"payment_address"`
-	Coin       string `json:"coin"`
-	Status     int    `json:"status"`
-	StatusText string `json:"status_text"`
-}
-
-type TransactionResponse struct {
-	Error  string       `json:"error"`
-	Result *Transaction `json:"result"`
-}
-
-type TransactionFindResponse struct {
-	Error  string           `json:"error"`
-	Result *TransactionFind `json:"result"`
-}
-
 type TransactionParams struct {
 	Amount     float64 `url:"amount"`
 	Currency1  string  `url:"currency1"`
@@ -78,8 +49,8 @@ func (s *TransactionService) getHMAC(params interface{}) string {
 	return getHMAC(getPayload(params))
 }
 
-func (s *TransactionService) CreateTransaction(transactionParams *TransactionParams) (TransactionResponse, *http.Response, error) {
-	transactionResponse := new(TransactionResponse)
+func (s *TransactionService) CreateTransactionMap(transactionParams *TransactionParams) (map[string]interface{}, *http.Response, error) {
+	transactionResponse := new(map[string]interface{})
 	s.Params.TransactionParams = *transactionParams
 	fmt.Println(getPayload(s.Params))
 	fmt.Println(getHMAC(getPayload(s.Params)))
@@ -88,8 +59,8 @@ func (s *TransactionService) CreateTransaction(transactionParams *TransactionPar
 	return *transactionResponse, resp, err
 }
 
-func (s TransactionService) FindTransaction(txnID string) (TransactionFindResponse, *http.Response, error) {
-	transactionResponse := new(TransactionFindResponse)
+func (s TransactionService) FindTransaction(txnID string) (map[string]interface{}, *http.Response, error) {
+	transactionResponse := new(map[string]interface{})
 	s.FindParams.TXNID = txnID
 
 	fmt.Println(getPayload(s.FindParams))
