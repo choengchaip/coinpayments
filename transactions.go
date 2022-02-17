@@ -61,8 +61,7 @@ func (s *TransactionService) CreateTransaction(transactionParams *TransactionPar
 
 func (s TransactionService) FindTransaction(txnID string) (map[string]interface{}, *http.Response, error) {
 	transactionResponse := new(map[string]interface{})
-	s.FindParams.TXNID = txnID
-
+	s.FindParams.TxnID = txnID
 	fmt.Println(getPayload(s.FindParams))
 	fmt.Println(getHMAC(getPayload(s.FindParams)))
 	resp, err := s.sling.New().Set("HMAC", s.getHMAC(s.FindParams)).Post(

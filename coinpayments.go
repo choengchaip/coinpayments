@@ -29,7 +29,7 @@ type APIParams struct {
 	Version string `url:"version"`
 	Command string `url:"cmd"`
 	Key     string `url:"key"`
-	TXNID   string `url:"id"`
+	TxnID   string `url:"txid"`
 }
 
 func NewClient(publicKey string, privateKey string, httpClient *http.Client) *Client {
